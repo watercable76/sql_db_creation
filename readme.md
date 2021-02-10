@@ -46,6 +46,7 @@ Running a file:
 * You will be prompted to install packages that are required the first time you open a C# file. Install this.  
 
 Run through the tutorial from VS Code about C#. Pretty similar to Java or C++.  
+Program is the Program.cs file.  
 
 <p>&nbsp;</p>
 
