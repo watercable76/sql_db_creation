@@ -25,14 +25,15 @@ I will be analyzing a sample sql database that I created online and then populat
 ## Tools Used
 
 The text editor I used is Visual Studio Code, as well as GitHub. I downloaded Git and connected the repo  
-to my VS Code. This way I can write content while ensuring it works and is visually easier to work with.  
+to my VS Code. This way I can write content while ensuring it works and is visually easier to work with. 
+
+I used C# for my code. I am going to use sqlite and connect with C#.  
 
 <p>&nbsp;</p>
 
 ### The packages downloaded are here
-1. [Node.js](https://nodejs.org/en/download/) - Install this software to your computer. This will be a version manager used to install node.js.
-2. Run 'npm init -y' which will create a package.json file.  
-3. Run 'npm install mongodb' to install the MongoDB driver to the package file.  
+1. [Documentation](https://code.visualstudio.com/docs/languages/csharp) - Go to this website to start working with C# with VS Code.  
+2. Find and install a C# extension.   
 
 <p>&nbsp;</p>
 
