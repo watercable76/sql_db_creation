@@ -1,0 +1,4 @@
+# ignore the obj file
+obj
+bin
+.vscode

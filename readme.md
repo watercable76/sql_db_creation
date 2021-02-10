@@ -32,8 +32,20 @@ I used C# for my code. I am going to use sqlite and connect with C#.
 <p>&nbsp;</p>
 
 ### The packages downloaded are here
-1. [Documentation](https://code.visualstudio.com/docs/languages/csharp) - Go to this website to start working with C# with VS Code.  
-2. Find and install a C# extension.   
+1. [Downloading C# to VS Code](https://code.visualstudio.com/docs/languages/csharp) - Go to this website to start working with C# with VS Code.  
+2. Find and install a C# extension.  
+
+
+### Starting with C#
+1. [C# Tutorial](https://docs.microsoft.com/en-us/dotnet/core/tutorials/with-visual-studio-code)  
+
+Running a file:
+* Create folder and save it.  
+* Run 'dotnet new console' in terminal. Installs packages and project requirements.  
+* Run 'dotnet run' to run the project.  
+* You will be prompted to install packages that are required the first time you open a C# file. Install this.  
+
+Run through the tutorial from VS Code about C#. Pretty similar to Java or C++.  
 
 <p>&nbsp;</p>
 
@@ -44,12 +56,12 @@ Create a 'index.js' file and use the code listed. Replace the connection string 
 <p>&nbsp;</p>
 
 ## Programming Language
-I used node.js for this project. I will include the steps to download the package below.   
+I used C# for this. Documentation is above.   
 
 
 <p>&nbsp;</p>
 
 # Useful Websites
 
-[Install node.js](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)  
-[Install Mongo Driver](https://docs.mongodb.com/drivers/node/quick-start#install-node-and-npm)
+[Downloading C# to VS Code](https://code.visualstudio.com/docs/languages/csharp)
+[C# Tutorial](https://docs.microsoft.com/en-us/dotnet/core/tutorials/with-visual-studio-code)
