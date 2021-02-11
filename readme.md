@@ -66,3 +66,4 @@ I used C# for this. Documentation is above.
 
 [Downloading C# to VS Code](https://code.visualstudio.com/docs/languages/csharp)  
 [C# Tutorial](https://docs.microsoft.com/en-us/dotnet/core/tutorials/with-visual-studio-code)
+[More C#](https://docs.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/)
