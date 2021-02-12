@@ -2,3 +2,7 @@
 obj
 bin
 .vscode
+
+# ignore db files
+test.db
+sql_db_creation.csproj
