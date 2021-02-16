@@ -69,3 +69,4 @@ I used C# for this. Documentation is above.
 [More C#](https://docs.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/)  
 
 [sqlite3 commands](https://docs.microsoft.com/en-us/dotnet/api/microsoft.data.sqlite?view=msdata-sqlite-5.0.0)
+[LinkedIn Learning](https://www.linkedin.com/learning/learning-c-sharp-3/a-hello-world-application?u=2153100)
