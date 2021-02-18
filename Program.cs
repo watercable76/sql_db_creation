@@ -12,7 +12,7 @@ public class DbInteraction
         string cs = stuff.cs;
 
         // testing to get data from external file
-        Console.WriteLine($"The connection string is {cs}.");
+        // Console.WriteLine($"The connection string is {cs}.");
         // System.Environment.Exit(0);
 
         using var con = new SQLiteConnection(cs);
@@ -24,16 +24,22 @@ public class DbInteraction
         SampleDb(cs);
 
         // read data from db
-        ReadSample(cs);
+        // ReadSample(cs);
 
         // Since the classes are all in the same namespace, can be called directly between files
         // ReadTable.Read();
 
-        // can write all functions inside this same file
-        // Read(cs);
-
         // call interaction function
         // UserInteraction();
+
+        // insert data call
+        InsertData(cs);
+
+        ReadSample(cs);
+
+        // create table call
+        CreateTable(cs);
+
     }
 
     /// <summary>Create sample db</summary>
@@ -50,9 +56,11 @@ public class DbInteraction
         cmd.CommandText = @"CREATE TABLE cars(id INTEGER PRIMARY KEY,
                     name TEXT, price INT)";
         cmd.ExecuteNonQuery();
+        // figuring out how to dynamically enter data
+        string[] table_info = { "Audi", "52642" };
         cmd.CommandText = @"INSERT INTO cars(name, price) 
                             VALUES
-                              ('Audi',52642)
+                              (@audi,52642)
                             , ('Mercedes',57127)
                             , ('Skoda',9000)
                             , ('Volvo',29000)
@@ -60,6 +68,7 @@ public class DbInteraction
                             , ('Citroen',21000)
                             , ('Hummer',41400)
                             , ('Volkswagen',21600)";
+        cmd.Parameters.AddWithValue("@audi", table_info[0]);
         cmd.ExecuteNonQuery();
         Console.WriteLine("Table cars created");
 
@@ -71,16 +80,16 @@ public class DbInteraction
         using var con = new SQLiteConnection(cs);
         con.Open();
 
-        string stm = "SELECT * FROM cars LIMIT 5";
+        string stm = "SELECT * FROM cars";
 
         using var cmd = new SQLiteCommand(stm, con);
         using SQLiteDataReader rdr = cmd.ExecuteReader();
         // outputs 
-        Console.WriteLine($"{rdr.GetName(0), -3} {rdr.GetName(1), -8} {rdr.GetName(2), 8}");
+        Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8}");
 
         while (rdr.Read())
         {
-            Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1), -8} {rdr.GetInt32(2), 8}");
+            Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1),-12} {rdr.GetInt32(2),8}");
         }
     }
 
@@ -94,11 +103,17 @@ public class DbInteraction
 
         using var cmd = new SQLiteCommand(con);
 
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Volkswagen',21600)";
+        Console.Write("What car name and price would you like to include? (write both words separated by a space) ");
+        string data = Console.ReadLine();
+        string[] info = data.Split(' ');
+        string insert = @"INSERT INTO cars(name, price) VALUES(@name, @price)";
+        cmd.Parameters.AddWithValue("@name", info[0]);
+        cmd.Parameters.AddWithValue("@price", info[1]);
+        cmd.CommandText = insert;
         cmd.ExecuteNonQuery();
     }
 
-    /// <summary>Void function that will input data into the tables</summary>
+    /// <summary>Void function that will create tables and their colummn names</summary>
     static void CreateTable(string cs)
     {
         // insert into a table the user specifies
@@ -110,15 +125,47 @@ public class DbInteraction
         Console.Write("What would you like to name your table? (If it already exists, it will be removed) ");
         var table = Console.ReadLine();
 
-        ReadSample(cs);
-        Console.WriteLine("What data is going to be in the table? (Refer to example db above) ");
+        // display example db
+        // ReadSample(cs);
 
-        cmd.CommandText = $"DROP IF EXISTS {table}";
-        cmd.ExecuteNonQuery();
+        // get user input for column names, id's auto generated
+        Console.WriteLine(@"Column names are how data is identified. They have data types, which specify
+what data is going to be stored. Some data types include
+        INTEGER - Whole numbers like 1, 2, 999, or even 234
+        REAL    - A number that has a decimal point
+        TEXT    - Any data that are words, phrases or characters
+        NULL    - Basically, this stores a 'nothing' value, but something is stored");
+        Console.Write(@"What data is going to be in the table? (Write the column names and data type separated by commas,
+like this: name TEXT) ");
+        string columns = Console.ReadLine();
+        string[] col = columns.Split(',');
 
-        cmd.CommandText = $@"CREATE TABLE {table}(id INTEGER PRIMARY KEY,
-                    name TEXT, price INT)";
-        cmd.ExecuteNonQuery();
+        string insert = @"CREATE TABLE @table(";
+        // to populate the data
+        // string dynamics = "@";
+
+        // how to dynamically add data to create table 
+        // add to a string and set @data+toSTring(i)
+        for (int i = 0; i < col.Length; i++)
+        {
+            if (i == col.Length - 1)
+            {
+                insert += col[i];
+            }
+            else {
+                insert += col[i] + ", ";
+            }
+        }
+        insert += ")";
+
+        Console.WriteLine(insert);
+
+        // cmd.CommandText = @"DROP IF EXISTS @table";
+        // cmd.Parameters.AddWithValue("@table", table);
+        // cmd.ExecuteNonQuery();
+
+        // cmd.CommandText = $@"CREATE TABLE @table({columns})";
+        // cmd.ExecuteNonQuery();
     }
 
     static void UserInteraction()
