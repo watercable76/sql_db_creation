@@ -6,6 +6,15 @@ public class CreateTable
 {
     static void Main()
     {
+        // PrivateInfo connector = new PrivateInfo();
+        // string cs = connector.cs();
+        Coolio stuff = new Coolio();
+        string data = stuff.cs;
+
+        // testing to get data from external file
+        Console.WriteLine($"The connection string is {data}.");
+        // System.Environment.Exit(0);
+
         string cs = @"URI=file:C:\Users\water\OneDrive\Documents\7TH SEMESTER\CSE 310\sql_db_creation\test.db";
 
         using var con = new SQLiteConnection(cs);
@@ -53,7 +62,7 @@ public class CreateTable
         // Read(cs);
 
         // call interaction function
-        UserInteraction();
+        // UserInteraction();
     }
 
     /// <summary>Read the db and display contents</summary>
@@ -73,17 +82,21 @@ public class CreateTable
         }
     }
 
-    // how to create summary for c# functions
-    /// <summary>
-    /// Void function that will input data into the tables
-    /// </summary>
-    // static void InsertData(string cs)
-    // {
-    //     using var con = new SQLiteConnection(cs);
-    //     con.OpenAndReturn();
+    //how to create summary for c# functions
+    /// <summary>Void function that will input data into the tables</summary>
+    static void InsertData(string cs)
+    {
+        // insert into a table the user specifies
+        using var con = new SQLiteConnection(cs);
+        con.Open();
 
-    //     string stm = "INSERT INTO ";
-    // }
+        using var cmd = new SQLiteCommand(con);
+
+        con.OpenAndReturn();
+
+        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Volkswagen',21600)";
+        cmd.ExecuteNonQuery();
+    }
 
     static void UserInteraction()
     {

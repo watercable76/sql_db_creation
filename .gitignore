@@ -6,3 +6,6 @@ bin
 # ignore db files
 test.db
 sql_db_creation.csproj
+
+# ignore cs file
+Coolio.cs
