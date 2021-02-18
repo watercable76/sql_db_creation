@@ -20,40 +20,11 @@ public class DbInteraction
 
         using var cmd = new SQLiteCommand(con);
 
-        cmd.CommandText = "DROP TABLE IF EXISTS cars";
-        cmd.ExecuteNonQuery();
+        // create sample db
+        SampleDb(cs);
 
-        cmd.CommandText = @"CREATE TABLE cars(id INTEGER PRIMARY KEY,
-                    name TEXT, price INT)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Audi',52642)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Mercedes',57127)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Skoda',9000)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Volvo',29000)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Bentley',350000)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Citroen',21000)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Hummer',41400)";
-        cmd.ExecuteNonQuery();
-
-        cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Volkswagen',21600)";
-        cmd.ExecuteNonQuery();
-
-        Console.WriteLine("Table cars created");
-
-        ExampleDb(cs);
+        // read data from db
+        ReadSample(cs);
 
         // Since the classes are all in the same namespace, can be called directly between files
         // ReadTable.Read();
@@ -65,35 +36,52 @@ public class DbInteraction
         // UserInteraction();
     }
 
+    /// <summary>Create sample db</summary>
+    public static void SampleDb(string cs)
+    {
+        using var con = new SQLiteConnection(cs);
+        con.Open();
+
+        using var cmd = new SQLiteCommand(con);
+
+        cmd.CommandText = "DROP TABLE IF EXISTS cars";
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = @"CREATE TABLE cars(id INTEGER PRIMARY KEY,
+                    name TEXT, price INT)";
+        cmd.ExecuteNonQuery();
+        cmd.CommandText = @"INSERT INTO cars(name, price) 
+                            VALUES
+                              ('Audi',52642)
+                            , ('Mercedes',57127)
+                            , ('Skoda',9000)
+                            , ('Volvo',29000)
+                            , ('Bentley',350000)
+                            , ('Citroen',21000)
+                            , ('Hummer',41400)
+                            , ('Volkswagen',21600)";
+        cmd.ExecuteNonQuery();
+        Console.WriteLine("Table cars created");
+
+    }
+
     /// <summary>Read the db and display contents</summary>
-    public static void ExampleDb(string cs)
+    public static void ReadSample(string cs)
     {
         using var con = new SQLiteConnection(cs);
         con.Open();
 
         string stm = "SELECT * FROM cars LIMIT 5";
 
-        // using var cmd = new SQLiteCommand(stm, con);
-        stm = "PRAGMA table_info('cars')";
         using var cmd = new SQLiteCommand(stm, con);
-
-        // cmd.CommandText = 
-        // cmd.ExecuteNonQuery();
-
         using SQLiteDataReader rdr = cmd.ExecuteReader();
+        // outputs 
+        Console.WriteLine($"{rdr.GetName(0), -3} {rdr.GetName(1), -8} {rdr.GetName(2), 8}");
 
-        // cmd.CommandText = "DESC cars";
-        // cmd.ExecuteNonQuery();
-        for (int i = 0; i < rdr.FieldCount; i++)
+        while (rdr.Read())
         {
-            Console.WriteLine(rdr.GetName(i));
+            Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1), -8} {rdr.GetInt32(2), 8}");
         }
-
-        // while (rdr.Read())
-        // {
-        //     Console.WriteLine($"{rdr.GetName(0)}");
-        //     Console.WriteLine($"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetInt32(2)}");
-        // }
     }
 
     //how to create summary for c# functions
@@ -122,7 +110,7 @@ public class DbInteraction
         Console.Write("What would you like to name your table? (If it already exists, it will be removed) ");
         var table = Console.ReadLine();
 
-        ExampleDb(cs);
+        ReadSample(cs);
         Console.WriteLine("What data is going to be in the table? (Refer to example db above) ");
 
         cmd.CommandText = $"DROP IF EXISTS {table}";
