@@ -2,20 +2,18 @@
 using System.Data.SQLite;
 
 
-public class CreateTable
+public class DbInteraction
 {
     static void Main()
     {
         // PrivateInfo connector = new PrivateInfo();
         // string cs = connector.cs();
         Coolio stuff = new Coolio();
-        string data = stuff.cs;
+        string cs = stuff.cs;
 
         // testing to get data from external file
-        Console.WriteLine($"The connection string is {data}.");
+        Console.WriteLine($"The connection string is {cs}.");
         // System.Environment.Exit(0);
-
-        string cs = @"URI=file:C:\Users\water\OneDrive\Documents\7TH SEMESTER\CSE 310\sql_db_creation\test.db";
 
         using var con = new SQLiteConnection(cs);
         con.Open();
@@ -55,6 +53,8 @@ public class CreateTable
 
         Console.WriteLine("Table cars created");
 
+        ExampleDb(cs);
+
         // Since the classes are all in the same namespace, can be called directly between files
         // ReadTable.Read();
 
@@ -66,20 +66,34 @@ public class CreateTable
     }
 
     /// <summary>Read the db and display contents</summary>
-    public static void Read(string cs)
+    public static void ExampleDb(string cs)
     {
         using var con = new SQLiteConnection(cs);
         con.Open();
 
         string stm = "SELECT * FROM cars LIMIT 5";
 
+        // using var cmd = new SQLiteCommand(stm, con);
+        stm = "PRAGMA table_info('cars')";
         using var cmd = new SQLiteCommand(stm, con);
+
+        // cmd.CommandText = 
+        // cmd.ExecuteNonQuery();
+
         using SQLiteDataReader rdr = cmd.ExecuteReader();
 
-        while (rdr.Read())
+        // cmd.CommandText = "DESC cars";
+        // cmd.ExecuteNonQuery();
+        for (int i = 0; i < rdr.FieldCount; i++)
         {
-            Console.WriteLine($"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetInt32(2)}");
+            Console.WriteLine(rdr.GetName(i));
         }
+
+        // while (rdr.Read())
+        // {
+        //     Console.WriteLine($"{rdr.GetName(0)}");
+        //     Console.WriteLine($"{rdr.GetInt32(0)} {rdr.GetString(1)} {rdr.GetInt32(2)}");
+        // }
     }
 
     //how to create summary for c# functions
@@ -92,9 +106,30 @@ public class CreateTable
 
         using var cmd = new SQLiteCommand(con);
 
-        con.OpenAndReturn();
-
         cmd.CommandText = "INSERT INTO cars(name, price) VALUES('Volkswagen',21600)";
+        cmd.ExecuteNonQuery();
+    }
+
+    /// <summary>Void function that will input data into the tables</summary>
+    static void CreateTable(string cs)
+    {
+        // insert into a table the user specifies
+        using var con = new SQLiteConnection(cs);
+        con.Open();
+
+        using var cmd = new SQLiteCommand(con);
+
+        Console.Write("What would you like to name your table? (If it already exists, it will be removed) ");
+        var table = Console.ReadLine();
+
+        ExampleDb(cs);
+        Console.WriteLine("What data is going to be in the table? (Refer to example db above) ");
+
+        cmd.CommandText = $"DROP IF EXISTS {table}";
+        cmd.ExecuteNonQuery();
+
+        cmd.CommandText = $@"CREATE TABLE {table}(id INTEGER PRIMARY KEY,
+                    name TEXT, price INT)";
         cmd.ExecuteNonQuery();
     }
 
@@ -123,10 +158,10 @@ What will you name columns? Please enter the names separated by a space: ");
         var columns = Console.ReadLine();
         string[] col = columns.Split(' ');
 
-        // foreach (var item in col)
-        // {
-        //     Console.WriteLine($"The row name is {item}.");
-        // }
+        foreach (var item in col)
+        {
+            Console.WriteLine($"The row name is {item}.");
+        }
 
         // get data
 
@@ -137,29 +172,29 @@ What will you name columns? Please enter the names separated by a space: ");
         // 3-data to be inserted
 
         // will not let me declare and work with multi-array
-        string[][] multi_array = new string[3][];
+        // string[][] multi_array = new string[3][];
 
-        multi_array[0][0] = table;
+        // multi_array[0][0] = table;
 
-        Console.WriteLine($"The name is {multi_array[0][0]}");
+        // Console.WriteLine($"The name is {multi_array[0][0]}");
 
-        int count = 0;
+        // int count = 0;
 
-        foreach (var item in col)
-        {
-            multi_array[1][count] = item;
-            count++;
-        }
+        // foreach (var item in col)
+        // {
+        //     multi_array[1][count] = item;
+        //     count++;
+        // }
 
         // for (int i = 0; i < col.Length; i++)
         // {
         //     multi_array[1][i] = col[i];
         // }
 
-        foreach (var data in multi_array[1])
-        {
-            Console.WriteLine($"The data is {data}.");
-        }
+        // foreach (var data in multi_array[1])
+        // {
+        //     Console.WriteLine($"The data is {data}.");
+        // }
 
 
     }
