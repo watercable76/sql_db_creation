@@ -123,7 +123,7 @@ public class DbInteraction
         using var cmd = new SQLiteCommand(con);
 
         Console.Write("What would you like to name your table? (If it already exists, it will be removed) ");
-        var table = Console.ReadLine();
+        string table = Console.ReadLine();
 
         // display example db
         // ReadSample(cs);
@@ -140,7 +140,7 @@ like this: name TEXT) ");
         string columns = Console.ReadLine();
         string[] col = columns.Split(',');
 
-        string insert = @"CREATE TABLE @table(";
+        string insert = @"CREATE TABLE " + table + "(ID INTEGER PRIMARY KEY, ";
         // to populate the data
         // string dynamics = "@";
 
@@ -148,24 +148,80 @@ like this: name TEXT) ");
         // add to a string and set @data+toSTring(i)
         for (int i = 0; i < col.Length; i++)
         {
-            if (i == col.Length - 1)
-            {
-                insert += col[i];
-            }
-            else {
-                insert += col[i] + ", ";
-            }
+            if (i == col.Length - 1) { insert += col[i] + ")"; }
+            else { insert += col[i] + ", "; }
         }
-        insert += ")";
 
         Console.WriteLine(insert);
 
-        // cmd.CommandText = @"DROP IF EXISTS @table";
+        // cmd.CommandText = @"DROP TABLE IF EXISTS @table";
         // cmd.Parameters.AddWithValue("@table", table);
-        // cmd.ExecuteNonQuery();
+        cmd.CommandText = "DROP TABLE IF EXISTS " + table;
+        cmd.ExecuteNonQuery();
 
-        // cmd.CommandText = $@"CREATE TABLE @table({columns})";
-        // cmd.ExecuteNonQuery();
+        cmd.CommandText = insert;
+        cmd.ExecuteNonQuery();
+
+        // sample db will be
+        // contact (table)
+        // include ID for all tables
+        // first_name - string
+        // city - string
+
+
+        // determine that data was input and is in table
+        cmd.CommandText = InsertUserTable(table);
+        cmd.ExecuteNonQuery();
+
+        string stm = "SELECT * FROM " + table;
+        using var cmnd = new SQLiteCommand(stm, con);
+        using SQLiteDataReader rdr = cmnd.ExecuteReader();
+        // outputs 
+        Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8}");
+
+        while (rdr.Read())
+        {
+            Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1),-12} {rdr.GetInt32(2),8}");
+        }
+
+    }
+
+    public static string InsertUserTable(string table)
+    {
+        // everything up to this point works. Need to parse object into arrays
+        // jacob salt lake city => 'jacob', 'salt lake city'
+        string insert = @"INSERT INTO " + table + " VALUES ";
+
+        Console.Write("How many rows of data are you going to insert now? ");
+        int rows = Int16.Parse(Console.ReadLine());
+
+        // how do I dynamically create this to allocate arrays to hold all of these values???
+        // for (int i = 0 ...) {}
+        // need to create new array, assign them name, and assign size
+
+        string[] names = new string [rows];
+        string[] address = new string [rows];
+
+        for (int i = 0; i < rows; i++)
+        {   
+            Console.Write("What is the name that will be input: ");
+            names[i] = Console.ReadLine();
+            Console.Write("What is the city name to be input: ");
+            address[i] = Console.ReadLine();
+        }
+
+        Console.Write(@"What values are going into the table? (Write the values,
+like this: jacob salt lake city, horace nile, etc.) ");
+        string columns = Console.ReadLine();
+        string[] col = columns.Split(',');
+
+        for (int i = 0; i < col.Length; i++)
+        {
+            if (i == col.Length - 1) { insert += col[i] + ")"; }
+            else { insert += col[i] + ", "; }
+        }
+
+        return insert;
     }
 
     static void UserInteraction()
