@@ -180,7 +180,7 @@ like this: name TEXT) ");
         using var cmnd = new SQLiteCommand(stm, con);
         using SQLiteDataReader rdr = cmnd.ExecuteReader();
         // outputs 
-        Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8}");
+        Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8} {rdr.GetName(3),12}");
 
         while (rdr.Read())
         {
