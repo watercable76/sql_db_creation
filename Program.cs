@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Collections.Generic;
 
 
 public class DbInteraction
@@ -153,14 +154,12 @@ like this: name TEXT) ");
         }
 
         Console.WriteLine(insert);
-
-        // cmd.CommandText = @"DROP TABLE IF EXISTS @table";
-        // cmd.Parameters.AddWithValue("@table", table);
         cmd.CommandText = "DROP TABLE IF EXISTS " + table;
         cmd.ExecuteNonQuery();
 
         cmd.CommandText = insert;
         cmd.ExecuteNonQuery();
+        Console.WriteLine("Table was created!");
 
         // sample db will be
         // contact (table)
@@ -170,8 +169,12 @@ like this: name TEXT) ");
 
 
         // determine that data was input and is in table
-        cmd.CommandText = InsertUserTable(table);
+        string insertStatement = InsertUserTable(table, col);
+        Console.WriteLine(insertStatement);
+        // System.Environment.Exit(0);
+        cmd.CommandText = insertStatement;
         cmd.ExecuteNonQuery();
+        Console.WriteLine("Insert was successful!!!");
 
         string stm = "SELECT * FROM " + table;
         using var cmnd = new SQLiteCommand(stm, con);
@@ -181,45 +184,87 @@ like this: name TEXT) ");
 
         while (rdr.Read())
         {
-            Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1),-12} {rdr.GetInt32(2),8}");
+            Console.WriteLine($@"{rdr.GetInt16(0),-3} {rdr.GetString(1),-12} {rdr.GetString(2),8} {rdr.GetString(3),12}");
         }
 
     }
 
-    public static string InsertUserTable(string table)
+    public static string InsertUserTable(string table, string[] array)
     {
         // everything up to this point works. Need to parse object into arrays
         // jacob salt lake city => 'jacob', 'salt lake city'
-        string insert = @"INSERT INTO " + table + " VALUES ";
+        // string insert = @"INSERT INTO " + table + " VALUES";
+        string insert = @"INSERT INTO " + table + '(';
 
         Console.Write("How many rows of data are you going to insert now? ");
         int rows = Int16.Parse(Console.ReadLine());
+
+        foreach (var item in array)
+        {
+            Console.WriteLine($"The row is {item}.");
+        }
+
+
+
+        // create var to hold col names
+        string[] columns = new string[array.Length];
+
+        for (int i = 0; i < array.Length; i++)
+        {
+            // have to declare a array to hold array value,
+            // and populate that with value from original array
+            string value = array[i];
+            string[] holder = value.Split(' ');
+            columns[i] = holder[0];
+            if (i == array.Length - 1) { insert += holder[0] + ") VALUES"; }
+            else { insert += holder[0] + ','; }
+            // Console.Write($"{columns[i]} ");
+        }
+
+        Console.WriteLine(insert);
 
         // how do I dynamically create this to allocate arrays to hold all of these values???
         // for (int i = 0 ...) {}
         // need to create new array, assign them name, and assign size
 
-        string[] names = new string [rows];
-        string[] address = new string [rows];
+        // create a dictionary and store values there???
+        Dictionary<int, string> dict = new Dictionary<int, string>();
+
+        string[] names = new string[rows];
+        string[] address = new string[rows];
 
         for (int i = 0; i < rows; i++)
-        {   
-            Console.Write("What is the name that will be input: ");
-            names[i] = Console.ReadLine();
-            Console.Write("What is the city name to be input: ");
-            address[i] = Console.ReadLine();
-        }
-
-        Console.Write(@"What values are going into the table? (Write the values,
-like this: jacob salt lake city, horace nile, etc.) ");
-        string columns = Console.ReadLine();
-        string[] col = columns.Split(',');
-
-        for (int i = 0; i < col.Length; i++)
         {
-            if (i == col.Length - 1) { insert += col[i] + ")"; }
-            else { insert += col[i] + ", "; }
+            for (int j = 0; j < columns.Length; j++)
+            {
+                Console.Write($"What value will go into {columns[j]}: ");
+                string value = Console.ReadLine();
+                // would not let me check if key does not exist, so I had to do a try
+                // and if it fails, then I add values later
+                try
+                {
+                    // did not know where to add first open paren, so did it here
+                    dict.Add(i, "('" + value);
+                }
+                catch (System.Exception)
+                {
+                    // need to add single quotes for all string values
+                    dict[i] += "','" + value;
+                }
+            }
+            // close the () for the insert and add comma to it
+            if (i == rows - 1) { dict[i] += "')"; }
+            else { dict[i] += "'), "; }
         }
+
+        foreach (KeyValuePair<int, string> ele1 in dict)
+        {
+            Console.WriteLine("{0} and {1}",
+                      ele1.Key, ele1.Value);
+            insert += ele1.Value;
+        }
+        Console.WriteLine(insert);
+        // System.Environment.Exit(0);
 
         return insert;
     }
