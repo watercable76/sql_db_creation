@@ -264,74 +264,7 @@ like this: name TEXT) ");
             insert += ele1.Value;
         }
         Console.WriteLine(insert);
-        // System.Environment.Exit(0);
 
         return insert;
-    }
-
-    static void UserInteraction()
-    {
-
-        // use just write to have text on line, but without \n char
-        Console.WriteLine("Welcome to the DB tutorial!");
-        Console.Write("Please enter your name here: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Your name is " + name);
-
-        Console.Write("Please enter your age: ");
-        var age = (Console.ReadLine());
-        // formatting strings just like old way for python
-        Console.WriteLine($"You are {age} years old");
-
-
-        // get table name
-        Console.Write("What is the name of the table to be created? ");
-        var table = Console.ReadLine();
-
-        // get row names
-        Console.Write(@"A DB contains column names that identify the data.
-What will you name columns? Please enter the names separated by a space: ");
-        var columns = Console.ReadLine();
-        string[] col = columns.Split(' ');
-
-        foreach (var item in col)
-        {
-            Console.WriteLine($"The row name is {item}.");
-        }
-
-        // get data
-
-
-        // array of arrays to hold data for table info
-        // 1-table name
-        // 2-column names
-        // 3-data to be inserted
-
-        // will not let me declare and work with multi-array
-        // string[][] multi_array = new string[3][];
-
-        // multi_array[0][0] = table;
-
-        // Console.WriteLine($"The name is {multi_array[0][0]}");
-
-        // int count = 0;
-
-        // foreach (var item in col)
-        // {
-        //     multi_array[1][count] = item;
-        //     count++;
-        // }
-
-        // for (int i = 0; i < col.Length; i++)
-        // {
-        //     multi_array[1][i] = col[i];
-        // }
-
-        // foreach (var data in multi_array[1])
-        // {
-        //     Console.WriteLine($"The data is {data}.");
-        // }
-
-
     }
 }
