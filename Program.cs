@@ -7,8 +7,6 @@ public class DbInteraction
 {
     static void Main()
     {
-        // PrivateInfo connector = new PrivateInfo();
-        // string cs = connector.cs();
         Coolio stuff = new Coolio();
         string cs = stuff.cs;
 
@@ -21,25 +19,53 @@ public class DbInteraction
 
         using var cmd = new SQLiteCommand(con);
 
+        // create user interaction here
+        string x = "\x0A";
+        var option = 10;
+
         // create sample db
         SampleDb(cs);
 
-        // read data from db
-        // ReadSample(cs);
+        while (option != 0)
+        {
+            Print_New_Lines(3);
+            Console.WriteLine($@"Welcome to the Database tutorial! By running this program,
+    you are starting your first database. A database is a way to store data, into column
+    and row structures. This data can be accessed, changed, deleted, or displayed.{x}");
+            Console.WriteLine("For this tutorial, you will select an option listed below.\n");
+            Console.WriteLine($@"You will be able to: 
+        1 - Look up data in a sample database
+        2 - Insert data into the existing database
+        3 - Create your own table and insert iformation (this will display all of your data afterwards{x}");
+            Console.Write("Which option will you chooose: ");
+            try
+            {
+                // did not know where to add first open paren, so did it here
+                option = Int16.Parse(Console.ReadLine());
+            }
+            catch (System.Exception)
+            {
+                // need to add single quotes for all string values
+                Console.WriteLine("That is an invalid entry. Please try again.\n\n");
+                option = 10;
+            }
 
-        // Since the classes are all in the same namespace, can be called directly between files
-        // ReadTable.Read();
-
-        // call interaction function
-        // UserInteraction();
-
-        // insert data call
-        InsertData(cs);
-
-        ReadSample(cs);
-
-        // create table call
-        CreateTable(cs);
+            if (option == 1)
+            {
+                // read data from db
+                ReadSample(cs);
+            }
+            else if (option == 2)
+            {
+                // insert data call
+                InsertData(cs);
+            }
+            else if (option == 3)
+            {
+                // create table call
+                CreateTable(cs);
+            }
+        }
 
     }
 
@@ -71,7 +97,7 @@ public class DbInteraction
                             , ('Volkswagen',21600)";
         cmd.Parameters.AddWithValue("@audi", table_info[0]);
         cmd.ExecuteNonQuery();
-        Console.WriteLine("Table cars created");
+        // Console.WriteLine("Table cars created");
 
     }
 
@@ -86,12 +112,36 @@ public class DbInteraction
         using var cmd = new SQLiteCommand(stm, con);
         using SQLiteDataReader rdr = cmd.ExecuteReader();
         // outputs 
+        Print_New_Lines(2);
         Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8}");
 
         while (rdr.Read())
         {
             Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1),-12} {rdr.GetInt32(2),8}");
         }
+    }
+
+    /// <summary>Read the db and display contents</summary>
+    public static void ReadTable(string cs)
+    {
+        using var con = new SQLiteConnection(cs);
+        con.Open();
+
+        Console.WriteLine("Which table would you like to read from?");
+        string table = Console.ReadLine();
+
+        string stm = "SELECT * FROM " + table;
+
+        using var cmd = new SQLiteCommand(stm, con);
+        using SQLiteDataReader rdr = cmd.ExecuteReader();
+        // outputs 
+        Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8}");
+
+        while (rdr.Read())
+        {
+            Console.WriteLine($@"{rdr.GetInt32(0),-3} {rdr.GetString(1),-12} {rdr.GetInt32(2),8}");
+        }
+        rdr.Close();
     }
 
     //how to create summary for c# functions
@@ -122,7 +172,7 @@ public class DbInteraction
         con.Open();
 
         using var cmd = new SQLiteCommand(con);
-
+        Print_New_Lines(2);
         Console.Write("What would you like to name your table? (If it already exists, it will be removed) ");
         string table = Console.ReadLine();
 
@@ -169,26 +219,46 @@ like this: name TEXT) ");
 
 
         // determine that data was input and is in table
+        Print_New_Lines(3);
         string insertStatement = InsertUserTable(table, col);
         Console.WriteLine(insertStatement);
         // System.Environment.Exit(0);
         cmd.CommandText = insertStatement;
         cmd.ExecuteNonQuery();
-        Console.WriteLine("Insert was successful!!!");
+        // Console.WriteLine("Insert was successful!!!");
+        Print_New_Lines(2);
 
         string stm = "SELECT * FROM " + table;
         using var cmnd = new SQLiteCommand(stm, con);
         using SQLiteDataReader rdr = cmnd.ExecuteReader();
         // outputs 
-        Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8} {rdr.GetName(3),12}");
+        // + num is right align, - is left align
+        for (int i = 0; i <= col.Length; i++)
+        {
+            Console.Write($"{rdr.GetName(i),-12}");
+        }
+        Print_New_Lines(1);
+        // Console.WriteLine($"{rdr.GetName(0),-3} {rdr.GetName(1),-12} {rdr.GetName(2),8} {rdr.GetName(3),12}");
 
         while (rdr.Read())
         {
-            Console.WriteLine($@"{rdr.GetInt16(0),-3} {rdr.GetString(1),-12} {rdr.GetString(2),8} {rdr.GetString(3),12}");
+            Console.Write($"{rdr.GetInt16(0),-12}");
+            for (int i = 1; i <= col.Length; i++)
+            {
+                Console.Write($"{rdr.GetString(i),-12}");
+            }
+            Print_New_Lines(1);
         }
+        // System.Environment.Exit(0);
+
+        rdr.Close();
 
     }
 
+    ///<summary>
+    ///Get column names for inserting into user's new table. Will format the input and make it into
+    /// correct sql format
+    ///</summary>
     public static string InsertUserTable(string table, string[] array)
     {
         // everything up to this point works. Need to parse object into arrays
@@ -199,12 +269,11 @@ like this: name TEXT) ");
         Console.Write("How many rows of data are you going to insert now? ");
         int rows = Int16.Parse(Console.ReadLine());
 
-        foreach (var item in array)
-        {
-            Console.WriteLine($"The row is {item}.");
-        }
-
-
+        // debugging purposes
+        // foreach (var item in array)
+        // {
+        //     Console.WriteLine($"The row is {item}.");
+        // }
 
         // create var to hold col names
         string[] columns = new string[array.Length];
@@ -221,7 +290,7 @@ like this: name TEXT) ");
             // Console.Write($"{columns[i]} ");
         }
 
-        Console.WriteLine(insert);
+        Console.WriteLine($"Here is the insert statement: {insert}\n");
 
         // how do I dynamically create this to allocate arrays to hold all of these values???
         // for (int i = 0 ...) {}
@@ -259,12 +328,21 @@ like this: name TEXT) ");
 
         foreach (KeyValuePair<int, string> ele1 in dict)
         {
-            Console.WriteLine("{0} and {1}",
-                      ele1.Key, ele1.Value);
+            // Console.WriteLine("{0} and {1}",
+            //           ele1.Key, ele1.Value);
             insert += ele1.Value;
         }
-        Console.WriteLine(insert);
+        // Console.WriteLine(insert);
 
         return insert;
+    }
+
+    ///<summary>Print multiple new lines. Laziness so I don't have to write console... multiples times :)</summary>
+    static void Print_New_Lines(int lines)
+    {
+        for (int i = 0; i < lines; i++)
+        {
+            Console.Write("\n");
+        }
     }
 }

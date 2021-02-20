@@ -8,7 +8,7 @@ SQL db
 <p>&nbsp;</p>
 
 ## Purpose 
-I will be analyzing a sample sql database that I created online and then populated with node.js.  
+I will be creating and working with a SQL database with C#.   
 
 <p>&nbsp;</p>
 
@@ -52,7 +52,7 @@ Program is the Program.cs file.
 
 ## Connect to the database
 Copy the connection string and save it in an important place (I saved it in a gitignore file for mine).  
-Create a 'index.js' file and use the code listed. Replace the connection string and password with the correct ones. 
+Create a Program.cs file, and start coding there.  
 
 <p>&nbsp;</p>
 
