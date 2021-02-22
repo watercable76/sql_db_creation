@@ -36,7 +36,7 @@ public class DbInteraction
             Console.WriteLine($@"You will be able to: 
         1 - Look up data in a sample database
         2 - Insert data into the existing database
-        3 - Create your own table and insert iformation (this will display all of your data afterwards{x}");
+        3 - Create your own table and insert information (this will display all of your data afterwards{x}");
             Console.Write("Which option will you chooose: ");
             try
             {
