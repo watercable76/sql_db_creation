@@ -14,11 +14,7 @@ I will be creating and working with a SQL database with C#.
 
 ## Youtube Link
 
-<<<<<<< HEAD
 [Software Demo Video](https://youtu.be/JL1e_6TRXhk)
-=======
-[Software Demo Video](https://www.youtube.com/watch?v=8Tt2uauOWYM)
->>>>>>> 92a25e0948e939d1c47ef0c4788be24727f98bfd
 
 <p>&nbsp;</p>
 
