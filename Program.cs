@@ -36,7 +36,8 @@ public class DbInteraction
             Console.WriteLine($@"You will be able to: 
         1 - Look up data in a sample database
         2 - Insert data into the existing database
-        3 - Create your own table and insert information (this will display all of your data afterwards{x}");
+        3 - Create your own table and insert information (this will display all of your data afterwards{x}
+        0 - Will end the program{x}");
             Console.Write("Which option will you chooose: ");
             try
             {
@@ -97,7 +98,6 @@ public class DbInteraction
                             , ('Volkswagen',21600)";
         cmd.Parameters.AddWithValue("@audi", table_info[0]);
         cmd.ExecuteNonQuery();
-        // Console.WriteLine("Table cars created");
 
     }
 
@@ -328,8 +328,7 @@ like this: name TEXT) ");
 
         foreach (KeyValuePair<int, string> ele1 in dict)
         {
-            // Console.WriteLine("{0} and {1}",
-            //           ele1.Key, ele1.Value);
+            // Console.WriteLine("{0} and {1}", ele1.Key, ele1.Value);
             insert += ele1.Value;
         }
         // Console.WriteLine(insert);
